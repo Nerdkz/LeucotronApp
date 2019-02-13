@@ -17,7 +17,8 @@ import br.com.meucantinhoapp.nerdzk.R;
 public class ComidaFragment extends Fragment {
 
 
-    private ListView listaComida;
+    public static ListView listaComida;
+
 
     public ComidaFragment() {
         // Required empty public constructor

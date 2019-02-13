@@ -13,10 +13,18 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import br.com.meucantinhoapp.nerdzk.Controler.ComidaFragment;
+import br.com.meucantinhoapp.nerdzk.Model.Bebida;
+import br.com.meucantinhoapp.nerdzk.Model.Comida;
+import br.com.meucantinhoapp.nerdzk.Model.Sobremesa;
+import br.com.meucantinhoapp.nerdzk.Model.Tabela;
+
+import static br.com.meucantinhoapp.nerdzk.Controler.ComidaFragment.listaComida;
+
 public class PratosActivity extends AppCompatActivity {
 
     private SQLiteDatabase dataBase;
-    private ListView listaComidas;
+
 
     private ArrayAdapter<String> comidasAdaptador;
     private ArrayList<Integer> ids;
@@ -26,19 +34,13 @@ public class PratosActivity extends AppCompatActivity {
     private Button botaoBebida;
     private Button botaoSobremesa;
 
+    private Comida comida = new Comida();
+    private Bebida bebida = new Bebida();
+    private Sobremesa sobremesa = new Sobremesa();
 
-    private String comidas [] = {"strogonoff de frangom . frango , alho , mostarda , ketchup , maionese , cebola . R$ 27,00",
-            "Feijoada . feijão preto , bacon , costela , carne seca , carne defumada . RS 30,00",
-            "Beirute . pão sírio , maionese , bife de carne bolvina , ovo , tomate , alface . R$ 32,00"};
-
-    private String bebidas[] = {"Coca-Cola . R$ 7,00", "Pepsi . R$ 6,00", "Fanta . R$ 5,50"};
-
-    private String sobremesas [] = {"Pudim . leite condensado , leite , ovos , açúcar . R$ 3,00",
-            "Brigadeiro . leite condensado , margarina , chocolate em pó , chocolate granulado . R$ 2,50",
-            "Muusse de Limão . leite condensado , creme de leite , suco puro de limão , bis de limão . R$ 4,00"};
-
-
-
+    private Tabela tabelaComida = new Tabela();
+    private Tabela tabelaBebida = new Tabela();
+    private Tabela tabelaSobremesa = new Tabela();
 
 
 
@@ -54,69 +56,74 @@ public class PratosActivity extends AppCompatActivity {
             botaoBebida = findViewById(R.id.bt_bebida_Id);
             botaoSobremesa = findViewById(R.id.bt_sobremesa_Id);
 
-            //Pegando a ação de Click dos botões
-            botaoComida.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-
-
-
-                }
-            });
-
-            botaoBebida.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-
-
-
-                }
-            });
-
-            botaoSobremesa.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-
-
-
-                }
-            });
-
 
             //Banco de Dados
-
             dataBase = openOrCreateDatabase("CantinhoApp", MODE_PRIVATE, null);
 
-            /* TABELAS */
 
-            dataBase.execSQL("CREATE TABLE IF NOT EXISTS alimentos(id INTEGER PRIMARY KEY AUTOINCREMENT,comida VARCHAR)");
+            /* TABELAS */
+            dataBase.execSQL("CREATE TABLE IF NOT EXISTS comidas(id INTEGER PRIMARY KEY AUTOINCREMENT,comida VARCHAR)");
             dataBase.execSQL("CREATE TABLE IF NOT EXISTS bebidas(id INTEGER PRIMARY KEY AUTOINCREMENT,bebida VARCHAR)");
             dataBase.execSQL("CREATE TABLE IF NOT EXISTS sobremesas(id INTEGER PRIMARY KEY AUTOINCREMENT,sobremesa VARCHAR)");
 
-
-
-            adicionarComida( comidas );
-            recuperarComidas();
-
-            adicionarBebida( bebidas );
-
+            /* Adicionando os itens nos cardápios */
+            adicionarComida( comida.getComidas() );
+            adicionarBebida( bebida.getBebidas() );
+            adicionarSobremesa( sobremesa.getSobremesas() );
 
         }catch (Exception e){
             e.printStackTrace();
         }
 
+
+
+
+        /* Pegando a ação de Click dos botões */
+        botaoComida.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                tabelaComida.setNome("comidas");
+                tabelaComida.setCampoPesquisa("comida");
+                Log.i("LoL","nome: " + tabelaComida.getNome());
+                recuperarItem(tabelaComida.getNome(), tabelaComida.getCampoPesquisa());
+            }
+        });
+
+        botaoBebida.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                tabelaBebida.setNome("bebidas");
+                tabelaBebida.setCampoPesquisa("bebida");
+                recuperarItem(tabelaBebida.getNome(), tabelaBebida.getCampoPesquisa());
+            }
+        });
+
+        botaoSobremesa.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                tabelaSobremesa.setNome("sobremesas");
+                tabelaSobremesa.setCampoPesquisa("sobremesa");
+                recuperarItem(tabelaSobremesa.getNome(), tabelaSobremesa.getCampoPesquisa());
+            }
+        });
+
     }
 
 
-    private void recuperarComidas(){
+    private void recuperarItem(String tabela, String atributo){
         try {
-            //Recuperar as comidas
-            Cursor cursor = dataBase.rawQuery("SELECT * FROM alimentos ORDER BY comida ASC", null);
+
+
+            //Recuperar os itens
+            Cursor cursor = dataBase.rawQuery("SELECT * FROM " + tabela + " ORDER BY " + atributo + " ASC", null);
 
             //Cursor cursor = dataBase.rawQuery("delete FROM alimentos", null);
 
             if(cursor.getCount() > 0) {
-
+                Log.i("LoL","aeeeeeeeeeeeee");
                 cursor.moveToFirst();
 
                 do {
@@ -136,7 +143,7 @@ public class PratosActivity extends AppCompatActivity {
 
             //recuperar os ids das colunas
             int indiceColunaId = cursor.getColumnIndex("id");
-            int indiceColunaComida = cursor.getColumnIndex("comida");
+            int indiceColunaAtributo = cursor.getColumnIndex( atributo );
 
 
             //Criando Adaptadores
@@ -147,22 +154,17 @@ public class PratosActivity extends AppCompatActivity {
             comidasAdaptador = new ArrayAdapter<String>(getApplicationContext(),
                     android.R.layout.simple_expandable_list_item_2, android.R.id.text1, itensComida);
 
-            listaComidas.setAdapter(comidasAdaptador);
+            ComidaFragment.listaComida.setAdapter(comidasAdaptador);
 
             //Listar as Comidas
             boolean position = cursor.moveToFirst();
 
             while (position) {
 
-
-                itensComida.add(cursor.getString(indiceColunaComida));
-                ids.add(Integer.parseInt(cursor.getString(indiceColunaId)));
-
-                itensComida.add(cursor.getString(indiceColunaComida));
+                itensComida.add(cursor.getString(indiceColunaAtributo));
                 ids.add(Integer.parseInt(cursor.getString(indiceColunaId)));
 
                 cursor.moveToNext();
-
             }
 
         }catch (Exception e){
@@ -176,8 +178,8 @@ public class PratosActivity extends AppCompatActivity {
         try{
             for(int i = 0; i < 3; i ++ ){
 
-                dataBase.execSQL("INSERT INTO alimentos (comida, ingrediente, preco) VALUES('" + item[i] + "')");
-                listaComidas.setAdapter(comidasAdaptador);
+                dataBase.execSQL("INSERT INTO comidas (comida) VALUES('" + item[i] + "')");
+                ComidaFragment.listaComida.setAdapter(comidasAdaptador);
 
             }
 
@@ -185,7 +187,7 @@ public class PratosActivity extends AppCompatActivity {
         catch (Exception e){
             e.printStackTrace();
         }
-        recuperarComidas();
+
     }
 
 
@@ -194,9 +196,9 @@ public class PratosActivity extends AppCompatActivity {
 
             for(int i = 0; i < 3; i ++ ){
 
-                dataBase.execSQL("INSERT INTO bebidas (bebida, ingrediente, preco) VALUES('" + item[i] + "')");
+                dataBase.execSQL("INSERT INTO bebidas (bebida) VALUES('" + item[i] + "')");
 
-                listaComidas.setAdapter(comidasAdaptador);
+                ComidaFragment.listaComida.setAdapter(comidasAdaptador);
 
             }
 
@@ -204,25 +206,24 @@ public class PratosActivity extends AppCompatActivity {
         catch (Exception e){
             e.printStackTrace();
         }
-        recuperarComidas();
+
     }
 
 
-    private void adicionarSobremesa( String item[], String ingrediente[], String preco[] ){
+    private void adicionarSobremesa( String item[] ){
         try{
 
             for(int i = 0; i < 3; i++){
 
-                dataBase.execSQL("INSERT INTO sobremesas (sobremesa, ingrediente, preco) " +
-                        "VALUES('" + item[i] + ',' +ingrediente[i] + ','+ preco[i] + "')");
+                dataBase.execSQL("INSERT INTO sobremesas (sobremesa) VALUES('" + item[i] + "')");
 
-                listaComidas.setAdapter(comidasAdaptador);
+                ComidaFragment.listaComida.setAdapter(comidasAdaptador);
             }
 
         }
         catch (Exception e){
             e.printStackTrace();
         }
-        recuperarComidas();
+
     }
 }
