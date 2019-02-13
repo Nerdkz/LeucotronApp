@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/ImageViewItemID"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="12dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginTop="9dp"
+        app:srcCompat="@drawable/comida_1" />
+
+    <TextView
+        android:id="@+id/ItemNomeID"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/ImageViewItemID"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginStart="87dp"
+        android:layout_marginLeft="87dp"
+        android:text="TextView" />
+
+    <TextView
+        android:id="@+id/ItemDescricaoId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/ItemNomeID"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="0dp"
+        android:text="TextView" />
+
+    <TextView
+        android:id="@+id/ItemPrecoId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/ItemNomeID"
+        android:layout_alignBottom="@+id/ImageViewItemID"
+        android:text="TextView" />
+
+</RelativeLayout>

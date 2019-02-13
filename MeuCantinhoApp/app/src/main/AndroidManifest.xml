@@ -16,8 +16,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".TestActivity" />
-        <activity android:name=".PratosActivity"></activity>
+        <activity android:name=".PratosActivity" />
+        <activity android:name=".ListaItemActivity"></activity>
     </application>
 
 </manifest>
