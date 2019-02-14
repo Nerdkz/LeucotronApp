@@ -7,8 +7,8 @@
     tools:context=".PratosActivity"
     tools:layout_editor_absoluteY="81dp">
 
-    <SearchView
-        android:id="@+id/pesquisaId"
+    <EditText
+        android:id="@+id/pesquisaIdText"
         android:layout_width="0dp"
         android:layout_height="59dp"
         android:layout_alignParentStart="true"
@@ -20,14 +20,14 @@
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/listaComidasId"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
         android:id="@+id/linearLayout"
-        android:layout_width="383dp"
+        android:layout_width="match_parent"
         android:layout_height="69dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
@@ -38,7 +38,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pesquisaId">
+        app:layout_constraintTop_toBottomOf="@+id/pesquisaIdText">
 
         <Button
             android:id="@+id/bt_comida_Id"
@@ -64,10 +64,8 @@
 
     <RelativeLayout
         android:id="@+id/rl_container_fragmento"
-        android:layout_width="395dp"
+        android:layout_width="match_parent"
         android:layout_height="523dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
         android:layout_marginTop="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

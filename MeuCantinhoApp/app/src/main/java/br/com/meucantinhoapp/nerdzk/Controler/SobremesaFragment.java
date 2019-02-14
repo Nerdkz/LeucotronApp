@@ -9,29 +9,36 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import java.util.ArrayList;
 
+import br.com.meucantinhoapp.nerdzk.Model.Comida;
 import br.com.meucantinhoapp.nerdzk.Model.Sobremesa;
 import br.com.meucantinhoapp.nerdzk.Model.Tabela;
 import br.com.meucantinhoapp.nerdzk.R;
 
 import static br.com.meucantinhoapp.nerdzk.PratosActivity.dataBase;
 
+
+
+
 /**
  * A simple {@link Fragment} subclass.
  */
 public class SobremesaFragment extends Fragment {
 
+
+    private ListView listaSobremesa;
+
     private Sobremesa sobremesa = new Sobremesa();
 
     private Tabela tabelaSobremesa = new Tabela();
 
-    private ArrayAdapter<String> sobremesaAdaptador;
 
+    private ArrayAdapter<String> sobremesasAdaptador;
     private ArrayList<Integer> ids;
-
-    private ArrayList<String> itensComida;
+    private ArrayList<String> itensSobremesa;
 
 
 
@@ -40,30 +47,62 @@ public class SobremesaFragment extends Fragment {
     }
 
 
+    public void onChangeText(CharSequence s) {
+        Log.i("Viny","Me chamou onChangeText");
+        sobremesasAdaptador.getFilter().filter(s);
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
 
-        /* Adicionando os itens nos cardápios */
-        adicionarSobremesa( sobremesa.getSobremesas() );
+        View viewComida = inflater.inflate(R.layout.fragment_comida, container, false);
+
+        listaSobremesa = viewComida.findViewById(R.id.comidaListId);
+
 
         tabelaSobremesa.setNome("sobremesas");
         tabelaSobremesa.setCampoPesquisa("sobremesa");
-        //recuperarItem(tabelaSobremesa.getNome(), tabelaSobremesa.getCampoPesquisa());
 
-        return inflater.inflate(R.layout.fragment_sobremesa, container, false);
+        Cursor cursor = dataBase.rawQuery("SELECT * FROM " + tabelaSobremesa.getNome() + " ORDER BY "
+                + tabelaSobremesa.getCampoPesquisa() + " ASC", null);
+
+
+        /* Adicionando os itens nos cardápios */
+        if(cursor.getCount() <= 0) {
+            adicionarSobremesa( sobremesa.getSobremesas() );
+        }
+
+         else{
+           //dataBase.execSQL("DROP TABLE sobremesas");
+        }
+
+
+
+
+
+
+
+
+
+        //Log.i("LoL","nome: " + tabelaComida.getNome());
+        recuperarItem(tabelaSobremesa.getNome(), tabelaSobremesa.getCampoPesquisa());
+
+
+
+        return viewComida;
     }
 
 
-    private void adicionarSobremesa( String item[] ){
-        try{
 
-            for(int i = 0; i < 3; i++){
+
+    private void adicionarSobremesa( String item[]){
+        try{
+            for(int i = 0; i < 3; i ++ ){
 
                 dataBase.execSQL("INSERT INTO sobremesas (sobremesa) VALUES('" + item[i] + "')");
+                listaSobremesa.setAdapter(sobremesasAdaptador);
 
-                //listaComida.setAdapter(sobremesaAdaptador);
             }
 
         }
@@ -73,13 +112,12 @@ public class SobremesaFragment extends Fragment {
 
     }
 
-    /*
     private void recuperarItem(String tabela, String atributo){
         try {
 
 
             //Recuperar os itens
-            Cursor cursor = dataBase.rawQuery("SELECT * FROM " + tabela + " ORDER BY " + atributo + " ASC", null);
+            Cursor cursor = dataBase.rawQuery("SELECT  DISTINCT* FROM " + tabela + " ORDER BY " + atributo + " ASC", null);
 
             //Cursor cursor = dataBase.rawQuery("delete FROM alimentos", null);
 
@@ -109,20 +147,20 @@ public class SobremesaFragment extends Fragment {
 
             //Criando Adaptadores
             ids = new ArrayList<Integer>();
-            itensComida = new ArrayList<String>();
+            itensSobremesa = new ArrayList<String>();
 
 
-            sobremesaAdaptador = new ArrayAdapter<String>(getContext(),
-                    android.R.layout.simple_expandable_list_item_2, android.R.id.text1, itensComida);
+            sobremesasAdaptador = new ArrayAdapter<String>(getActivity(),
+                    android.R.layout.simple_expandable_list_item_2, android.R.id.text1, itensSobremesa);
 
-            sobremesaAdaptador.setAdapter(sobremesaAdaptador);
+            listaSobremesa.setAdapter(sobremesasAdaptador);
 
             //Listar as Comidas
             boolean position = cursor.moveToFirst();
 
             while (position) {
 
-                itensComida.add(cursor.getString(indiceColunaAtributo));
+                itensSobremesa.add(cursor.getString(indiceColunaAtributo));
                 ids.add(Integer.parseInt(cursor.getString(indiceColunaId)));
 
                 cursor.moveToNext();
@@ -133,6 +171,4 @@ public class SobremesaFragment extends Fragment {
         }
 
     }
-    */
-
 }

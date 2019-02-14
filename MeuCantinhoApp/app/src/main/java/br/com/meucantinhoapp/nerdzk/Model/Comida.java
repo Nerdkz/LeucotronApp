@@ -2,9 +2,9 @@ package br.com.meucantinhoapp.nerdzk.Model;
 
 public class Comida {
 
-    private String comidas [] = {"strogonoff de frango     R$ 27,00 \nfrango , alho , mostarda , ketchup , maionese ,\ncebola .",
-            "Feijoada    RS 30,00 \nfeijão preto , bacon , costela , carne seca , \ncarne defumada.",
-            "Beirute     R$ 32,00 \npão sírio , maionese , bife de carne bolvina."};
+    private String comidas [] = {"Strogonoff de Frango\nFrango , alho, mostarda, ketchup.\nR$ 27,00",
+            "Feijoada\nFeijão preto , bacon , costela.\nRS 30,00",
+            "Beirute\nPão sírio , maionese , carne bolvina.\nR$ 32,00"};
 
 
     public  Comida(){

@@ -9,57 +9,96 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import java.util.ArrayList;
 
 import br.com.meucantinhoapp.nerdzk.Model.Bebida;
+import br.com.meucantinhoapp.nerdzk.Model.Comida;
 import br.com.meucantinhoapp.nerdzk.Model.Tabela;
 import br.com.meucantinhoapp.nerdzk.R;
 
 import static br.com.meucantinhoapp.nerdzk.PratosActivity.dataBase;
+
+
+
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class BebidaFragment extends Fragment {
 
+
+    private ListView listaBebida;
+
     private Bebida bebida = new Bebida();
+
     private Tabela tabelaBebida = new Tabela();
 
-    private ArrayAdapter<String> comidasAdaptador;
+
+    private ArrayAdapter<String> bebidasAdaptador;
     private ArrayList<Integer> ids;
-    private ArrayList<String> itensComida;
+    private ArrayList<String> itensBebida;
+
+
 
     public BebidaFragment() {
         // Required empty public constructor
     }
 
 
+    public void onChangeText(CharSequence s) {
+        Log.i("Viny","Me chamou onChangeText");
+        bebidasAdaptador.getFilter().filter(s);
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
 
+        View viewBebida = inflater.inflate(R.layout.fragment_bebida, container, false);
 
-        /* Adicionando os itens nos cardápios */
-        //adicionarBebida( bebida.getBebidas() );
+        listaBebida = viewBebida.findViewById(R.id.bebidaListId);
+
 
         tabelaBebida.setNome("bebidas");
         tabelaBebida.setCampoPesquisa("bebida");
-        //recuperarItem(tabelaBebida.getNome(), tabelaBebida.getCampoPesquisa());
 
-        return inflater.inflate(R.layout.fragment_bebida, container, false);
+        Cursor cursor = dataBase.rawQuery("SELECT * FROM " + tabelaBebida.getNome() + " ORDER BY "
+                + tabelaBebida.getCampoPesquisa() + " ASC", null);
+
+
+        /* Adicionando os itens nos cardápios */
+        if(cursor.getCount() <= 0) {
+            adicionarBebida( bebida.getBebidas() );
+        }
+
+        /*
+        else{
+           dataBase.execSQL("DROP TABLE bebidas");
+        }
+        */
+
+
+
+
+        //Log.i("LoL","nome: " + tabelaComida.getNome());
+        recuperarItem(tabelaBebida.getNome(), tabelaBebida.getCampoPesquisa());
+
+
+
+        return viewBebida;
     }
 
-    /*
-    private void adicionarBebida( String item[] ){
-        try{
 
+
+
+    private void adicionarBebida( String item[]){
+        try{
             for(int i = 0; i < 3; i ++ ){
 
-                dataBase.execSQL("INSERT INTO bebidas (bebida) VALUES('" + item[i] + "')");
-
-                ComidaFragment.listaComida.setAdapter(comidasAdaptador);
+                dataBase.execSQL("INSERT INTO Bebidas (bebida) VALUES('" + item[i] + "')");
+                listaBebida.setAdapter(bebidasAdaptador);
 
             }
 
@@ -75,7 +114,7 @@ public class BebidaFragment extends Fragment {
 
 
             //Recuperar os itens
-            Cursor cursor = dataBase.rawQuery("SELECT * FROM " + tabela + " ORDER BY " + atributo + " ASC", null);
+            Cursor cursor = dataBase.rawQuery("SELECT  DISTINCT* FROM " + tabela + " ORDER BY " + atributo + " ASC", null);
 
             //Cursor cursor = dataBase.rawQuery("delete FROM alimentos", null);
 
@@ -105,20 +144,20 @@ public class BebidaFragment extends Fragment {
 
             //Criando Adaptadores
             ids = new ArrayList<Integer>();
-            itensComida = new ArrayList<String>();
+            itensBebida = new ArrayList<String>();
 
 
-            comidasAdaptador = new ArrayAdapter<String>(getActivity(),
-                    android.R.layout.simple_expandable_list_item_2, android.R.id.text1, itensComida);
+            bebidasAdaptador = new ArrayAdapter<String>(getActivity(),
+                    android.R.layout.simple_expandable_list_item_2, android.R.id.text1, itensBebida);
 
-            listaComida.setAdapter(comidasAdaptador);
+            listaBebida.setAdapter(bebidasAdaptador);
 
             //Listar as Comidas
             boolean position = cursor.moveToFirst();
 
             while (position) {
 
-                itensComida.add(cursor.getString(indiceColunaAtributo));
+                itensBebida.add(cursor.getString(indiceColunaAtributo));
                 ids.add(Integer.parseInt(cursor.getString(indiceColunaId)));
 
                 cursor.moveToNext();
@@ -129,6 +168,4 @@ public class BebidaFragment extends Fragment {
         }
 
     }
-    */
-
 }

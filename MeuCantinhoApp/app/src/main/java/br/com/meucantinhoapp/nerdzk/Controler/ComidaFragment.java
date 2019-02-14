@@ -46,6 +46,11 @@ public class ComidaFragment extends Fragment {
     }
 
 
+    public void onChangeText(CharSequence s) {
+        Log.i("Viny","Me chamou onChangeText");
+        comidasAdaptador.getFilter().filter(s);
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -53,6 +58,7 @@ public class ComidaFragment extends Fragment {
         View viewComida = inflater.inflate(R.layout.fragment_comida, container, false);
 
         listaComida = viewComida.findViewById(R.id.comidaListId);
+
 
         tabelaComida.setNome("comidas");
         tabelaComida.setCampoPesquisa("comida");
@@ -73,11 +79,17 @@ public class ComidaFragment extends Fragment {
 
 
 
+
+
         //Log.i("LoL","nome: " + tabelaComida.getNome());
         recuperarItem(tabelaComida.getNome(), tabelaComida.getCampoPesquisa());
 
+
+
         return viewComida;
     }
+
+
 
 
     private void adicionarComida( String item[]){
